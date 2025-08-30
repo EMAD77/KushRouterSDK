@@ -1,0 +1,393 @@
+# 🚀 KushRouter SDK
+
+[![npm version](https://badge.fury.io/js/kushrouter-sdk.svg)](https://badge.fury.io/js/kushrouter-sdk)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+The official TypeScript/JavaScript SDK for **KushRouter** - your unified gateway to 200+ AI models from OpenAI, Anthropic, Google, Meta, and more. Build powerful AI applications with a single, consistent API.
+
+## 🎁 **Get Started with $50 Free Credits!**
+
+**[Create your KushRouter account](https://kushrouter.com)** and receive **$50 in free API credits** to start building immediately. No credit card required for signup!
+
+1. 🔗 **[Sign up at kushrouter.com](https://kushrouter.com)**
+2. 💰 **Get $50 free credits automatically**
+3. 🔑 **Generate your API key**
+4. 🚀 **Start building with 200+ AI models**
+
+---
+
+## ⚡ Quick Installation
+
+### 🚀 One-Command Install (Recommended)
+
+**Linux/macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/EMAD77/KushRouterSDK/main/install.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/EMAD77/KushRouterSDK/main/install.ps1 | iex
+```
+
+### 📦 Manual Installation
+
+Choose your preferred package manager:
+
+```bash
+# npm
+npm install kushrouter-sdk
+
+# yarn
+yarn add kushrouter-sdk
+
+# pnpm
+pnpm add kushrouter-sdk
+
+# bun
+bun add kushrouter-sdk
+```
+
+> 💡 **New to the project?** Check out our **[Quick Setup Guide](./QUICK_SETUP.md)** for a complete walkthrough!
+
+---
+
+## 🏃‍♂️ Quick Start
+
+```typescript
+import { createKushRouterSDK } from 'kushrouter-sdk';
+
+// Initialize with your API key from https://kushrouter.com
+const sdk = createKushRouterSDK({
+  apiKey: 'your-api-key-here' // Get this from https://kushrouter.com
+});
+
+// Generate text with any AI model
+const response = await sdk.complete('Explain quantum computing in simple terms');
+console.log(response);
+
+// Stream responses in real-time
+const stream = await sdk.complete('Write a creative story', { stream: true });
+for await (const chunk of stream) {
+  process.stdout.write(chunk);
+}
+
+// Chat with conversational AI
+const chatResponse = await sdk.chat([
+  { role: 'user', content: 'Hello! What can you help me with?' }
+]);
+console.log(chatResponse);
+```
+
+---
+
+## 🌟 Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **🤖 200+ AI Models** | Access GPT-4, Claude, Gemini, Llama, and more through one API |
+| **⚡ Real-time Streaming** | Stream responses as they're generated |
+| **💬 Chat & Completion** | Support for both chat and text completion |
+| **🛠️ Function Calling** | Build AI agents with custom tools |
+| **📊 Built-in Analytics** | Track usage, costs, and performance |
+| **🔒 Enterprise Security** | SOC 2 compliant with data encryption |
+| **💰 Cost Optimization** | Intelligent routing for best price/performance |
+| **🌍 Global CDN** | Low latency worldwide |
+
+---
+
+## 📖 Documentation
+
+### 🚀 Getting Started
+- **[Installation & Setup](./docs/getting-started/installation.md)** - Complete setup guide
+- **[Quick Start Guide](./docs/getting-started/quick-start.md)** - Get running in 5 minutes
+- **[Authentication](./docs/getting-started/authentication.md)** - API key management
+
+### 🔧 Core Features
+- **[Text Completion](./docs/core-features/text-completion.md)** - Generate text with AI
+- **[Streaming Responses](./docs/core-features/streaming.md)** - Real-time text streaming
+- **[Chat Conversations](./docs/core-features/chat-conversations.md)** - Conversational AI
+- **[Error Handling](./docs/core-features/error-handling.md)** - Robust error management
+
+### 🎯 Use Cases & Examples
+- **[Building Chatbots](./docs/use-cases/chatbots.md)** - Complete chatbot guide
+- **[AI Agents](./docs/use-cases/ai-agents.md)** - Intelligent agents with tools
+- **[Content Generation](./docs/use-cases/content-generation.md)** - Automated content creation
+- **[Code Assistance](./docs/use-cases/code-assistance.md)** - AI-powered coding help
+
+### 📚 Examples
+- **[Code Examples](./docs/examples/)** - Ready-to-use code snippets
+- **[Framework Integrations](./docs/integrations/)** - Next.js, React, Express guides
+- **[Production Patterns](./docs/advanced/)** - Scalable, production-ready implementations
+
+---
+
+## 🔥 Popular Use Cases
+
+### 1. **Simple Text Generation**
+```typescript
+const sdk = createKushRouterSDK({ apiKey: 'your-key' });
+const result = await sdk.complete('Write a product description for wireless headphones');
+```
+
+### 2. **Real-time Streaming Chat**
+```typescript
+const stream = await sdk.complete('Explain machine learning', { 
+  stream: true,
+  model: 'gpt-4' 
+});
+
+for await (const chunk of stream) {
+  console.log(chunk);
+}
+```
+
+### 3. **Conversational AI**
+```typescript
+const messages = [
+  { role: 'user', content: 'Hello!' },
+  { role: 'assistant', content: 'Hi! How can I help?' },
+  { role: 'user', content: 'Explain blockchain technology' }
+];
+
+const response = await sdk.chat(messages);
+```
+
+### 4. **AI Agent with Tools**
+```typescript
+const response = await sdk.chatOpenAI({
+  model: 'gpt-4',
+  messages: [{ role: 'user', content: 'What\'s the weather in Tokyo?' }],
+  tools: [weatherTool],
+  tool_choice: 'auto'
+});
+```
+
+---
+
+## 🌐 Supported AI Models
+
+| Provider | Models | Use Cases |
+|----------|--------|-----------|
+| **OpenAI** | GPT-4, GPT-4 Turbo, GPT-3.5 | Chat, completion, code |
+| **Anthropic** | Claude 3.5 Sonnet, Claude 3 Opus | Analysis, reasoning, safety |
+| **Google** | Gemini Pro, Gemini Ultra | Multimodal, search integration |
+| **Meta** | Llama 2, Code Llama | Open source, code generation |
+| **Cohere** | Command, Generate | Enterprise, embeddings |
+| **Mistral** | Mistral 7B, Mixtral | Efficient, multilingual |
+
+[**View all 200+ models →**](https://kushrouter.com/models)
+
+---
+
+## 🛠️ Framework Integrations
+
+### Next.js
+```typescript
+// pages/api/chat.ts
+import { createKushRouterSDK } from 'kushrouter-sdk';
+
+const sdk = createKushRouterSDK({ apiKey: process.env.KUSHROUTER_API_KEY! });
+
+export default async function handler(req, res) {
+  const { message } = req.body;
+  const response = await sdk.complete(message);
+  res.json({ response });
+}
+```
+
+### React Hook
+```typescript
+import { useState } from 'react';
+import { createKushRouterSDK } from 'kushrouter-sdk';
+
+export function useAI() {
+  const [loading, setLoading] = useState(false);
+  const sdk = createKushRouterSDK({ apiKey: process.env.REACT_APP_KUSHROUTER_API_KEY! });
+  
+  const generate = async (prompt: string) => {
+    setLoading(true);
+    try {
+      return await sdk.complete(prompt);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return { generate, loading };
+}
+```
+
+### Express.js
+```typescript
+import express from 'express';
+import { createKushRouterSDK } from 'kushrouter-sdk';
+
+const app = express();
+const sdk = createKushRouterSDK({ apiKey: process.env.KUSHROUTER_API_KEY! });
+
+app.post('/api/generate', async (req, res) => {
+  const { prompt } = req.body;
+  const response = await sdk.complete(prompt);
+  res.json({ response });
+});
+```
+
+---
+
+## 📊 Environment Setup
+
+### Environment Variables
+```bash
+# .env
+KUSHROUTER_API_KEY=your_api_key_here
+```
+
+### TypeScript Configuration
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true
+  }
+}
+```
+
+---
+
+## 🔒 Security & Best Practices
+
+### ✅ **Do's**
+- Store API keys in environment variables
+- Use server-side API calls for sensitive operations
+- Implement rate limiting in production
+- Monitor usage and costs regularly
+
+### ❌ **Don'ts**
+- Never expose API keys in client-side code
+- Don't commit API keys to version control
+- Avoid hardcoding sensitive configuration
+
+### Example Secure Setup
+```typescript
+// ✅ Secure server-side usage
+const sdk = createKushRouterSDK({
+  apiKey: process.env.KUSHROUTER_API_KEY!, // From environment
+  timeout: 30000,
+  retries: 3
+});
+
+// ✅ With error handling
+try {
+  const response = await sdk.complete(prompt);
+  return response;
+} catch (error) {
+  console.error('AI generation failed:', error);
+  throw new Error('Failed to generate response');
+}
+```
+
+---
+
+## 📈 Monitoring & Analytics
+
+Track your AI usage with built-in analytics:
+
+```typescript
+const sdk = createKushRouterSDK({
+  apiKey: 'your-key',
+  analytics: true, // Enable usage tracking
+  metadata: {
+    userId: 'user-123',
+    sessionId: 'session-456'
+  }
+});
+```
+
+View detailed analytics at **[app.kushrouter.com](https://app.kushrouter.com)**:
+- 📊 Usage statistics
+- 💰 Cost breakdown
+- ⚡ Performance metrics
+- 🔍 Request logs
+
+---
+
+## 🚀 Production Deployment
+
+### Performance Optimization
+```typescript
+const sdk = createKushRouterSDK({
+  apiKey: process.env.KUSHROUTER_API_KEY!,
+  timeout: 30000,
+  retries: 3,
+  cache: true, // Enable response caching
+  rateLimiting: {
+    requests: 100,
+    window: 60000 // 100 requests per minute
+  }
+});
+```
+
+### Error Handling
+```typescript
+import { KushRouterError } from 'kushrouter-sdk';
+
+try {
+  const response = await sdk.complete(prompt);
+} catch (error) {
+  if (error instanceof KushRouterError) {
+    console.error('KushRouter API Error:', error.message);
+    console.error('Status:', error.status);
+    console.error('Code:', error.code);
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+---
+
+## 🤝 Community & Support
+
+### 📚 Resources
+- **[📖 Full Documentation](https://docs.kushrouter.com)**
+- **[🎮 Interactive Playground](https://app.kushrouter.com/playground)**
+- **[💰 Pricing Calculator](https://kushrouter.com/pricing)**
+- **[📊 Status Page](https://status.kushrouter.com)**
+
+### 🆘 Get Help
+- **[� Email Support](mailto:support@kushrouter.com)** - Direct technical support
+- **[🐛 GitHub Issues](https://github.com/EMAD77/KushRouterSDK/issues)** - Bug reports & feature requests
+
+### 🔗 Links
+- **[🌐 Website](https://kushrouter.com)**
+- **[📖 API Docs](https://kushrouter.com/docs)**
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🎯 Next Steps
+
+1. **[🔗 Create your account](https://kushrouter.com)** and get $50 free credits
+2. **[📖 Read the Quick Start Guide](./docs/getting-started/quick-start.md)**
+3. **[🎮 Try the Interactive Playground](https://app.kushr  outer.com/playground)**
+
+---
+
+<div align="center">
+
+**Built with ❤️ by the KushRouter Team**
+
+[Website](https://kushrouter.com) • [Documentation](https://kushrouter.com/docs) •
+
+</div>

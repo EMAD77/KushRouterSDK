@@ -1,0 +1,39 @@
+# Source files
+src/
+docs/
+examples/
+
+# Development files
+tsconfig.json
+.eslintrc.js
+jest.config.js
+.gitignore
+.npmignore
+
+# Development dependencies
+node_modules/
+*.log
+.env*
+
+# Build artifacts
+*.tsbuildinfo
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+__tests__/
+
+# Documentation source
+docs/
+README.md.template

@@ -6,7 +6,7 @@ This guide covers how to install and set up the KushRouter SDK in your project.
 
 - **Node.js 18+** (required for native fetch support)
 - **TypeScript 4.5+** (recommended but not required)
-- **KushRouter API Key** (get one at [app.kushrouter.com](https://app.kushrouter.com))
+- **KushRouter API Key** (get one at [kushrouter.com](https://kushrouter.com))
 
 ## Installation
 
@@ -22,7 +22,7 @@ This guide covers how to install and set up the KushRouter SDK in your project.
 
 ```bash
 # Download the SDK file
-curl -o src/utils/KushRouterSdk.ts https://raw.githubusercontent.com/kushrouter/sdk/main/utils/KushRouterSdk.ts
+curl -o src/utils/KushRouterSdk.ts https://raw.githubusercontent.com/EMAD77/KushRouterSDK/main/src/index.ts
 ```
 
 ## Project Setup

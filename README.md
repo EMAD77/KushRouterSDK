@@ -1,10 +1,9 @@
 # 🚀 KushRouter SDK
 
-[![npm version](https://badge.fury.io/js/kushrouter-sdk.svg)](https://badge.fury.io/js/kushrouter-sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The official TypeScript/JavaScript SDK for **KushRouter** - your unified gateway to 200+ AI models from OpenAI, Anthropic, Google, Meta, and more. Build powerful AI applications with a single, consistent API.
+The official TypeScript/JavaScript SDK for **KushRouter** - your unified gateway to AI models from OpenAI, Anthropic. Build powerful AI applications with a single, consistent API.
 
 ## 🎁 **Get Started with $50 Free Credits!**
 
@@ -82,21 +81,6 @@ console.log(chatResponse);
 
 ---
 
-## 🌟 Key Features
-
-| Feature | Description |
-|---------|-------------|
-| **🤖 200+ AI Models** | Access GPT-4, Claude, Gemini, Llama, and more through one API |
-| **⚡ Real-time Streaming** | Stream responses as they're generated |
-| **💬 Chat & Completion** | Support for both chat and text completion |
-| **🛠️ Function Calling** | Build AI agents with custom tools |
-| **📊 Built-in Analytics** | Track usage, costs, and performance |
-| **🔒 Enterprise Security** | SOC 2 compliant with data encryption |
-| **💰 Cost Optimization** | Intelligent routing for best price/performance |
-| **🌍 Global CDN** | Low latency worldwide |
-
----
-
 ## 📖 Documentation
 
 ### 🚀 Getting Started
@@ -168,16 +152,7 @@ const response = await sdk.chatOpenAI({
 
 ## 🌐 Supported AI Models
 
-| Provider | Models | Use Cases |
-|----------|--------|-----------|
-| **OpenAI** | GPT-4, GPT-4 Turbo, GPT-3.5 | Chat, completion, code |
-| **Anthropic** | Claude 3.5 Sonnet, Claude 3 Opus | Analysis, reasoning, safety |
-| **Google** | Gemini Pro, Gemini Ultra | Multimodal, search integration |
-| **Meta** | Llama 2, Code Llama | Open source, code generation |
-| **Cohere** | Command, Generate | Enterprise, embeddings |
-| **Mistral** | Mistral 7B, Mixtral | Efficient, multilingual |
-
-[**View all 200+ models →**](https://kushrouter.com/models)
+[**View all supported models →**](https://kushrouter.com/models)
 
 ---
 
@@ -309,7 +284,7 @@ const sdk = createKushRouterSDK({
 });
 ```
 
-View detailed analytics at **[app.kushrouter.com](https://app.kushrouter.com)**:
+View detailed analytics at **[kushrouter.com](https://kushrouter.com)**:
 - 📊 Usage statistics
 - 💰 Cost breakdown
 - ⚡ Performance metrics
@@ -356,7 +331,7 @@ try {
 
 ### 📚 Resources
 - **[📖 Full Documentation](https://docs.kushrouter.com)**
-- **[🎮 Interactive Playground](https://app.kushrouter.com/playground)**
+- **[🎮 Interactive Playground](https://kushrouter.com/playground)**
 - **[💰 Pricing Calculator](https://kushrouter.com/pricing)**
 - **[📊 Status Page](https://status.kushrouter.com)**
 
@@ -380,7 +355,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 1. **[🔗 Create your account](https://kushrouter.com)** and get $50 free credits
 2. **[📖 Read the Quick Start Guide](./docs/getting-started/quick-start.md)**
-3. **[🎮 Try the Interactive Playground](https://app.kushr  outer.com/playground)**
+3. **[🎮 Try the Interactive Playground](https://kushrouter.com/playground)**
 
 ---
 

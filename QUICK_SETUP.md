@@ -85,7 +85,7 @@ That's it! You now have:
 ## 📚 What's Next?
 
 - **[📖 Read the Full Documentation](./docs/README.md)**
-- **[🎮 Try the Interactive Playground](https://app.kushrouter.com/playground)**
+- **[🎮 Try the Interactive Playground](https://kushrouter.com/playground)**
 - **[🔍 Explore Code Examples](./docs/examples/README.md)**
 
 ## 🆘 Need Help?

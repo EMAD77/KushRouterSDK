@@ -4,7 +4,7 @@ Get up and running with the KushRouter SDK in under 5 minutes.
 
 ## Step 1: Get Your API Key
 
-1. Sign up at [app.kushrouter.com](https://app.kushrouter.com)
+1. Sign up at [kushrouter.com](https://kushrouter.com/)
 2. Create a new API key in the dashboard
 3. Copy your API key (starts with `kr_`)
 

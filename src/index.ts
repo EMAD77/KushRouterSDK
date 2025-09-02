@@ -42,6 +42,7 @@ export interface UnifiedRequest {
   toolChoice?: any;
   timeoutMs?: number;
   reasoning_effort?: 'low' | 'medium' | 'high';
+  prompt_cache?: boolean;
 }
 
 export interface OpenAIRequest {
@@ -105,7 +106,7 @@ export interface FileUploadResponse {
 }
 
 export interface BatchRequest {
-  input_file_id: string;
+  input_file_url: string;
   endpoint: string;
   completion_window?: string;
   metadata?: Record<string, any>;
@@ -492,12 +493,18 @@ export class KushRouterSDK {
 
   /**
    * File management
+   * Note: Files are uploaded to generate public URLs for batch processing.
+   * Use UUIDs in filenames for security (e.g., 'batch-{uuid}.jsonl')
    */
   files = {
     /**
-     * Upload a file
+     * Upload a file and get a public URL
+     * @param file File or Blob to upload
+     * @param filename Filename (recommend using UUID for security)
+     * @param purpose Purpose of the file (default: 'batch')
+     * @returns Upload response with public URL in the 'url' field
      */
-    upload: async (file: File | Blob, filename: string, purpose = 'batch'): Promise<FileUploadResponse> => {
+    upload: async (file: File | Blob, filename: string, purpose = 'batch'): Promise<FileUploadResponse & { url: string }> => {
       const formData = new FormData();
       formData.append('file', file, filename);
       formData.append('purpose', purpose);
@@ -529,11 +536,12 @@ export class KushRouterSDK {
   };
 
   /**
-   * Batch processing
+   * Batch processing (unified endpoint)
    */
   batches = {
     /**
      * Create a new batch
+     * @param request Batch request with input_file_url (use UUID in filename for security)
      */
     create: async (request: BatchRequest): Promise<BatchResponse> => {
       const response = await this.makeRequest('/api/v1/batches', {
@@ -589,6 +597,63 @@ export class KushRouterSDK {
   };
 
   /**
+   * OpenAI-compatible batch processing
+   * Use this for full OpenAI API compatibility
+   */
+  openai = {
+    batches: {
+      /**
+       * Create a new batch (OpenAI-compatible)
+       * @param request Batch request with input_file_url (use UUID in filename for security)
+       */
+      create: async (request: BatchRequest): Promise<BatchResponse> => {
+        const response = await this.makeRequest('/api/v1/openai/batches', {
+          method: 'POST',
+          body: JSON.stringify(request),
+        }, true); // Use Bearer token
+
+        return response.json();
+      },
+
+      /**
+       * List batches (OpenAI-compatible)
+       */
+      list: async (limit?: number): Promise<{ object: string; data: BatchResponse[]; has_more: boolean }> => {
+        const url = limit ? `/api/v1/openai/batches?limit=${limit}` : '/api/v1/openai/batches';
+        const response = await this.makeRequest(url, {}, true);
+        return response.json();
+      },
+
+      /**
+       * Get batch status (OpenAI-compatible)
+       */
+      get: async (batchId: string): Promise<BatchResponse> => {
+        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}`, {}, true);
+        return response.json();
+      },
+
+      /**
+       * Cancel a batch (OpenAI-compatible)
+       */
+      cancel: async (batchId: string): Promise<BatchResponse> => {
+        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}/cancel`, {
+          method: 'POST',
+        }, true);
+
+        return response.json();
+      },
+
+      /**
+       * Get batch results (OpenAI-compatible)
+       */
+      results: async (batchId: string): Promise<any> => {
+        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}/results`, {}, true);
+        return response.json();
+      },
+    },
+  };
+
+  /**
    * Tokenization
    */
   async tokenize(request: TokenizeRequest): Promise<TokenizeResponse> {
@@ -631,6 +696,8 @@ export class KushRouterSDK {
       temperature?: number;
       maxTokens?: number;
       stream?: boolean;
+      reasoning_effort?: 'low' | 'medium' | 'high';
+      prompt_cache?: boolean;
     } = {}
   ): Promise<string | AsyncGenerator<string>> {
     const {
@@ -639,6 +706,8 @@ export class KushRouterSDK {
       temperature = 0.7,
       maxTokens = 1000,
       stream = false,
+      reasoning_effort,
+      prompt_cache,
     } = options;
 
     const request: UnifiedRequest = {
@@ -648,6 +717,8 @@ export class KushRouterSDK {
       temperature,
       max_tokens: maxTokens,
       stream,
+      reasoning_effort,
+      prompt_cache,
     };
 
     if (stream) {
@@ -680,6 +751,8 @@ export class KushRouterSDK {
       temperature?: number;
       maxTokens?: number;
       stream?: boolean;
+      reasoning_effort?: 'low' | 'medium' | 'high';
+      prompt_cache?: boolean;
     } = {}
   ): Promise<string | AsyncGenerator<string>> {
     const {
@@ -687,6 +760,8 @@ export class KushRouterSDK {
       temperature = 0.7,
       maxTokens = 1000,
       stream = false,
+      reasoning_effort,
+      prompt_cache,
     } = options;
 
     const request: UnifiedRequest = {
@@ -695,6 +770,8 @@ export class KushRouterSDK {
       temperature,
       max_tokens: maxTokens,
       stream,
+      reasoning_effort,
+      prompt_cache,
     };
 
     if (stream) {

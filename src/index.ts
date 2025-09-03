@@ -43,6 +43,7 @@ export interface UnifiedRequest {
   timeoutMs?: number;
   reasoning_effort?: 'low' | 'medium' | 'high';
   prompt_cache?: boolean;
+  input_file_id?: string; // File-based input support
 }
 
 export interface OpenAIRequest {

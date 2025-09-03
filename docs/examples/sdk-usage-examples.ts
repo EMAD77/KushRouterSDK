@@ -183,7 +183,50 @@
 // }
 
 // /**
-//  * Example 8: Unified batch creation with file support
+//  * Example 8: Unified endpoint with file-based input
+//  */
+// async function unifiedEndpointWithFiles() {
+//   try {
+//     // Create JSONL content for unified endpoint
+//     const unifiedRequest = {
+//       model: "gpt-5-2025-08-07",
+//       messages: [{ role: "user", content: "Hello from file!" }],
+//       reasoning_effort: "high",
+//       max_tokens: 100,
+//       temperature: 0.7
+//     };
+
+//     const jsonlContent = JSON.stringify(unifiedRequest);
+
+//     // Upload file
+//     const file = await sdk.files.upload(jsonlContent, 'unified-request.jsonl');
+//     console.log('File uploaded:', file.id);
+
+//     // Use file in unified endpoint
+//     const response = await sdk.chatUnified({
+//       input_file_id: file.id,
+//       stream: false  // Override file settings if needed
+//     });
+//     console.log('Unified response:', response.choices[0].message.content);
+
+//     // Also works with streaming
+//     const streamResponse = await sdk.streamUnified({
+//       input_file_id: file.id,
+//       stream: true
+//     });
+
+//     console.log('Streaming from file:');
+//     for await (const chunk of streamResponse) {
+//       const content = chunk.choices[0]?.delta?.content;
+//       if (content) process.stdout.write(content);
+//     }
+//   } catch (error) {
+//     console.error('Unified file error:', error);
+//   }
+// }
+
+// /**
+//  * Example 9: Unified batch creation with file support
 //  */
 // async function unifiedBatchWithFiles() {
 //   try {
@@ -413,6 +456,7 @@
 //     { name: 'OpenAI Compatible', fn: openAICompatible },
 //     { name: 'Anthropic Compatible', fn: anthropicCompatible },
 //     { name: 'OpenAI Batch (Files)', fn: openAIBatchUsingFiles },
+//     { name: 'Unified Endpoint (Files)', fn: unifiedEndpointWithFiles },
 //     { name: 'Unified Batch (Files)', fn: unifiedBatchWithFiles },
 //     { name: 'Files Management', fn: filesManagement },
 //     { name: 'Tokenization & Costs', fn: tokenizationAndCosts },
@@ -445,6 +489,7 @@
 //   openAICompatible,
 //   anthropicCompatible,
 //   openAIBatchUsingFiles,
+//   unifiedEndpointWithFiles,
 //   unifiedBatchWithFiles,
 //   filesManagement,
 //   tokenizationAndCosts,

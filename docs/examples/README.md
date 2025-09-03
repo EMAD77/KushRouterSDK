@@ -73,7 +73,25 @@ const response = await sdk.chat(messages);
 console.log(response);
 ```
 
-### 4. Tool-Using Agent
+### 4. File-Based Unified Endpoint
+```typescript
+// Upload a unified request file
+const unifiedRequest = {
+  model: "gpt-5-2025-08-07",
+  messages: [{ role: "user", content: "Hello from file!" }],
+  reasoning_effort: "high",
+  max_tokens: 100
+};
+
+const file = await sdk.files.upload(JSON.stringify(unifiedRequest), 'request.jsonl');
+
+// Use file in unified endpoint
+const response = await sdk.chatUnified({
+  input_file_id: file.id
+});
+```
+
+### 5. Tool-Using Agent
 ```typescript
 const response = await sdk.chatOpenAI({
   model: 'gpt-5-2025-08-07',

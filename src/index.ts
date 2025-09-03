@@ -105,12 +105,49 @@ export interface FileUploadResponse {
   created_at: string;
 }
 
-export interface BatchRequest {
+export interface UnifiedBatchRequest {
+  requests: UnifiedRequest[];
+  metadata?: Record<string, any>;
+  settings?: {
+    concurrency?: number;
+  };
+}
+
+export interface AnthropicBatchRequest {
+  requests: Array<{
+    custom_id?: string;
+    params: {
+      model: string;
+      messages: AnthropicMessage[];
+      max_tokens: number;
+      temperature?: number;
+      system?: string;
+      tools?: any[];
+      tool_choice?: any;
+      prompt_cache?: {
+        read?: boolean;
+        write?: boolean;
+        ttlSeconds?: number;
+      };
+      mcp_servers?: any[];
+      service_tier?: string;
+    };
+  }>;
+  metadata?: Record<string, any>;
+  settings?: {
+    concurrency?: number;
+  };
+}
+
+export interface OpenAIBatchRequest {
   input_file_url: string;
   endpoint: string;
   completion_window?: string;
   metadata?: Record<string, any>;
 }
+
+// Legacy alias for backward compatibility
+export interface BatchRequest extends OpenAIBatchRequest {}
 
 export interface BatchResponse {
   id: string;
@@ -540,10 +577,10 @@ export class KushRouterSDK {
    */
   batches = {
     /**
-     * Create a new batch
-     * @param request Batch request with input_file_url (use UUID in filename for security)
+     * Create a new unified batch with direct requests array
+     * @param request Unified batch request with requests array
      */
-    create: async (request: BatchRequest): Promise<BatchResponse> => {
+    create: async (request: UnifiedBatchRequest): Promise<BatchResponse> => {
       const response = await this.makeRequest('/api/v1/batches', {
         method: 'POST',
         body: JSON.stringify(request),
@@ -597,16 +634,79 @@ export class KushRouterSDK {
   };
 
   /**
+   * Anthropic-compatible batch processing
+   */
+  anthropic = {
+    batches: {
+      /**
+       * Create a new Anthropic batch
+       * @param request Anthropic batch request with params structure
+       */
+      create: async (request: AnthropicBatchRequest): Promise<BatchResponse> => {
+        const response = await this.makeRequest('/api/v1/anthropic/batches', {
+          method: 'POST',
+          body: JSON.stringify(request),
+        });
+
+        return response.json();
+      },
+
+      /**
+       * List Anthropic batches
+       */
+      list: async (limit?: number): Promise<{ data: BatchResponse[] }> => {
+        const url = limit ? `/api/v1/anthropic/batches?limit=${limit}` : '/api/v1/anthropic/batches';
+        const response = await this.makeRequest(url);
+        return response.json();
+      },
+
+      /**
+       * Get Anthropic batch status
+       */
+      get: async (batchId: string): Promise<BatchResponse> => {
+        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}`);
+        return response.json();
+      },
+
+      /**
+       * Cancel an Anthropic batch
+       */
+      cancel: async (batchId: string): Promise<BatchResponse> => {
+        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/cancel`, {
+          method: 'POST',
+        });
+        return response.json();
+      },
+
+      /**
+       * Get Anthropic batch results
+       */
+      results: async (batchId: string): Promise<any> => {
+        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/results`);
+        return response.json();
+      },
+
+      /**
+       * Export Anthropic batch results
+       */
+      export: async (batchId: string): Promise<Blob> => {
+        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/export`);
+        return response.blob();
+      },
+    },
+  };
+
+  /**
    * OpenAI-compatible batch processing
-   * Use this for full OpenAI API compatibility
+   * Use this for full OpenAI API compatibility with external JSONL files
    */
   openai = {
     batches: {
       /**
        * Create a new batch (OpenAI-compatible)
-       * @param request Batch request with input_file_url (use UUID in filename for security)
+       * @param request OpenAI batch request with input_file_url for external JSONL file
        */
-      create: async (request: BatchRequest): Promise<BatchResponse> => {
+      create: async (request: OpenAIBatchRequest): Promise<BatchResponse> => {
         const response = await this.makeRequest('/api/v1/openai/batches', {
           method: 'POST',
           body: JSON.stringify(request),

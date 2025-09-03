@@ -148,6 +148,36 @@ const response = await sdk.chatOpenAI({
 });
 ```
 
+### 5. **Batch Processing with Files**
+```typescript
+// Upload batch requests file
+const jsonlContent = [
+  { model: "gpt-4", messages: [{ role: "user", content: "Hello" }] },
+  { model: "claude-3-5-sonnet", messages: [{ role: "user", content: "Hi there" }] }
+].map(req => JSON.stringify(req)).join('\n');
+
+const file = await sdk.files.upload(jsonlContent, 'batch-requests.jsonl');
+
+// Create batch from uploaded file
+const batch = await sdk.batches.createFromFile(file.id);
+console.log('Batch created:', batch.id);
+```
+
+### 6. **Files Management**
+```typescript
+// Upload a file
+const file = await sdk.files.upload('File content here', 'my-file.txt');
+
+// List files
+const files = await sdk.files.list();
+
+// Get file content
+const content = await sdk.files.content(file.id);
+
+// Delete file
+await sdk.files.delete(file.id);
+```
+
 ---
 
 ## 🌐 Supported AI Models

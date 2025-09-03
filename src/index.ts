@@ -106,7 +106,8 @@ export interface FileUploadResponse {
 }
 
 export interface UnifiedBatchRequest {
-  requests: UnifiedRequest[];
+  requests?: UnifiedRequest[];
+  input_file_id?: string;
   metadata?: Record<string, any>;
   settings?: {
     concurrency?: number;
@@ -140,7 +141,7 @@ export interface AnthropicBatchRequest {
 }
 
 export interface OpenAIBatchRequest {
-  input_file_url: string;
+  input_file_id: string;
   endpoint: string;
   completion_window?: string;
   metadata?: Record<string, any>;
@@ -154,7 +155,7 @@ export interface BatchResponse {
   object: string;
   endpoint: string;
   status: string;
-  input_file_id: string;
+  input_file_id?: string | null;
   output_file_id?: string;
   error_file_id?: string;
   created_at: number;
@@ -345,13 +346,67 @@ export class KushRouterSDK {
     throw lastError!;
   }
 
+  // Normalize camelCase inputs to snake_case for wire format (unified endpoint)
+  private normalizeUnifiedRequest(req: any): any {
+    if (!req || typeof req !== 'object') return req;
+    const out: any = { ...req };
+    if (out.maxTokens !== undefined) {
+      out.max_tokens = out.max_tokens ?? out.maxTokens;
+      delete out.maxTokens;
+    }
+    if (out.toolChoice !== undefined) {
+      out.tool_choice = out.tool_choice ?? out.toolChoice;
+      delete out.toolChoice;
+    }
+    if (out.timeoutMs !== undefined) {
+      out.timeout_ms = out.timeout_ms ?? out.timeoutMs;
+      delete out.timeoutMs;
+    }
+    if (out.promptCache !== undefined) {
+      out.prompt_cache = out.prompt_cache ?? out.promptCache;
+      delete out.promptCache;
+    }
+    if (out.reasoningEffort !== undefined) {
+      out.reasoning_effort = out.reasoning_effort ?? out.reasoningEffort;
+      delete out.reasoningEffort;
+    }
+    return out;
+  }
+
+  // Normalize camelCase inputs to snake_case for OpenAI-compatible endpoint
+  private normalizeOpenAIRequest(req: any): any {
+    if (!req || typeof req !== 'object') return req;
+    const out: any = { ...req };
+    if (out.maxTokens !== undefined) {
+      out.max_tokens = out.max_tokens ?? out.maxTokens;
+      delete out.maxTokens;
+    }
+    if (out.toolChoice !== undefined) {
+      out.tool_choice = out.tool_choice ?? out.toolChoice;
+      delete out.toolChoice;
+    }
+    if (out.reasoningEffort !== undefined) {
+      out.reasoning_effort = out.reasoning_effort ?? out.reasoningEffort;
+      delete out.reasoningEffort;
+    }
+    if (out.responseFormat !== undefined) {
+      out.response_format = out.response_format ?? out.responseFormat;
+      delete out.responseFormat;
+    }
+    if (out.timeoutMs !== undefined) {
+      out.timeout_ms = out.timeout_ms ?? out.timeoutMs;
+      delete out.timeoutMs;
+    }
+    return out;
+  }
+
   /**
    * Chat completions using the unified endpoint
    */
   async chatUnified(request: UnifiedRequest): Promise<ChatResponse> {
     const response = await this.makeRequest('/api/v1/llm/unified', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(this.normalizeUnifiedRequest(request)),
     });
 
     return response.json();
@@ -361,7 +416,7 @@ export class KushRouterSDK {
    * Streaming chat completions using the unified endpoint
    */
   async *streamUnified(request: UnifiedRequest): AsyncGenerator<StreamChunk> {
-    const streamRequest = { ...request, stream: true };
+    const streamRequest = this.normalizeUnifiedRequest({ ...request, stream: true });
     
     const response = await this.makeRequest('/api/v1/llm/unified', {
       method: 'POST',
@@ -410,7 +465,7 @@ export class KushRouterSDK {
   async chatOpenAI(request: OpenAIRequest): Promise<ChatResponse> {
     const response = await this.makeRequest('/api/v1/openai/chat/completions', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(this.normalizeOpenAIRequest(request)),
     }, true); // Use Bearer token
 
     return response.json();
@@ -420,7 +475,7 @@ export class KushRouterSDK {
    * Streaming OpenAI-compatible chat completions
    */
   async *streamOpenAI(request: OpenAIRequest): AsyncGenerator<StreamChunk> {
-    const streamRequest = { ...request, stream: true };
+    const streamRequest = this.normalizeOpenAIRequest({ ...request, stream: true });
     
     const response = await this.makeRequest('/api/v1/openai/chat/completions', {
       method: 'POST',
@@ -529,27 +584,30 @@ export class KushRouterSDK {
   }
 
   /**
-   * File management
-   * Note: Files are uploaded to generate public URLs for batch processing.
-   * Use UUIDs in filenames for security (e.g., 'batch-{uuid}.jsonl')
+   * Files API for uploading and managing JSONL files for batch processing
    */
   files = {
     /**
-     * Upload a file and get a public URL
-     * @param file File or Blob to upload
-     * @param filename Filename (recommend using UUID for security)
-     * @param purpose Purpose of the file (default: 'batch')
-     * @returns Upload response with public URL in the 'url' field
+     * Upload a file (text content or FormData)
      */
-    upload: async (file: File | Blob, filename: string, purpose = 'batch'): Promise<FileUploadResponse & { url: string }> => {
-      const formData = new FormData();
-      formData.append('file', file, filename);
-      formData.append('purpose', purpose);
+    upload: async (content: string | FormData, filename?: string): Promise<FileUploadResponse> => {
+      let body: FormData | string;
+      let headers: Record<string, string> = {};
 
-      const response = await this.makeRequest('/api/v1/files/upload', {
+      if (typeof content === 'string') {
+        // JSON upload
+        body = JSON.stringify({ content, filename: filename || 'batch.jsonl' });
+        headers['Content-Type'] = 'application/json';
+      } else {
+        // FormData upload
+        body = content;
+        // Don't set Content-Type for FormData - let browser set it with boundary
+      }
+
+      const response = await this.makeRequest('/api/v1/files', {
         method: 'POST',
-        body: formData,
-        headers: {}, // Don't set Content-Type for FormData
+        body,
+        headers,
       });
 
       return response.json();
@@ -558,16 +616,34 @@ export class KushRouterSDK {
     /**
      * List uploaded files
      */
-    list: async (): Promise<{ data: FileUploadResponse[] }> => {
+    list: async (): Promise<{ object: string; data: FileUploadResponse[]; has_more: boolean }> => {
       const response = await this.makeRequest('/api/v1/files');
       return response.json();
     },
 
     /**
-     * Get file by ID or key
+     * Get file metadata
      */
     get: async (fileId: string): Promise<FileUploadResponse> => {
-      const response = await this.makeRequest(`/api/v1/files/${encodeURIComponent(fileId)}`);
+      const response = await this.makeRequest(`/api/v1/files/${fileId}`);
+      return response.json();
+    },
+
+    /**
+     * Get file content as text
+     */
+    content: async (fileId: string): Promise<string> => {
+      const response = await this.makeRequest(`/api/v1/files/${fileId}/content`);
+      return response.text();
+    },
+
+    /**
+     * Delete a file
+     */
+    delete: async (fileId: string): Promise<{ id: string; object: string; deleted: boolean }> => {
+      const response = await this.makeRequest(`/api/v1/files/${fileId}`, {
+        method: 'DELETE',
+      });
       return response.json();
     },
   };
@@ -577,8 +653,8 @@ export class KushRouterSDK {
    */
   batches = {
     /**
-     * Create a new unified batch with direct requests array
-     * @param request Unified batch request with requests array
+     * Create a new unified batch with direct requests array or file input
+     * @param request Unified batch request with requests array or input_file_id
      */
     create: async (request: UnifiedBatchRequest): Promise<BatchResponse> => {
       const response = await this.makeRequest('/api/v1/batches', {
@@ -587,6 +663,21 @@ export class KushRouterSDK {
       });
 
       return response.json();
+    },
+
+    /**
+     * Create a batch from uploaded file
+     * @param fileId The file ID from files.upload()
+     * @param options Additional batch options
+     */
+    createFromFile: async (
+      fileId: string, 
+      options: { metadata?: Record<string, any>; settings?: { concurrency?: number } } = {}
+    ): Promise<BatchResponse> => {
+      return this.batches.create({
+        input_file_id: fileId,
+        ...options,
+      });
     },
 
     /**
@@ -704,7 +795,7 @@ export class KushRouterSDK {
     batches: {
       /**
        * Create a new batch (OpenAI-compatible)
-       * @param request OpenAI batch request with input_file_url for external JSONL file
+       * @param request OpenAI batch request with input_file_id for uploaded JSONL file
        */
       create: async (request: OpenAIBatchRequest): Promise<BatchResponse> => {
         const response = await this.makeRequest('/api/v1/openai/batches', {
@@ -713,6 +804,23 @@ export class KushRouterSDK {
         }, true); // Use Bearer token
 
         return response.json();
+      },
+
+      /**
+       * Create a batch from uploaded file (OpenAI-compatible)
+       * @param fileId The file ID from files.upload()
+       * @param options Additional batch options
+       */
+      createFromFile: async (
+        fileId: string,
+        options: { endpoint?: string; completion_window?: string; metadata?: Record<string, any> } = {}
+      ): Promise<BatchResponse> => {
+        return this.openai.batches.create({
+          input_file_id: fileId,
+          endpoint: options.endpoint || '/v1/chat/completions',
+          completion_window: options.completion_window || '24h',
+          metadata: options.metadata,
+        });
       },
 
       /**

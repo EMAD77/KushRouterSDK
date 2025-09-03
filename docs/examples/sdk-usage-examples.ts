@@ -139,43 +139,120 @@
 // }
 
 // /**
-//  * Example 7: File upload and batch processing
+//  * Example 7: OpenAI-compatible batch creation using Files API
 //  */
-// async function batchProcessing() {
+// async function openAIBatchUsingFiles() {
 //   try {
-//     // Create a sample JSONL file for batch processing
-//     const batchData = [
-//       { "custom_id": "req-1", "method": "POST", "url": "/v1/chat/completions", "body": { "model": "gpt-5-2025-08-07", "messages": [{"role": "user", "content": "What is 2+2?"}] } },
-//       { "custom_id": "req-2", "method": "POST", "url": "/v1/chat/completions", "body": { "model": "gpt-5-2025-08-07", "messages": [{"role": "user", "content": "What is the capital of France?"}] } },
-//     ];
+//     // Create JSONL content for batch processing
+//     const jsonlContent = [
+//       {
+//         custom_id: "req-1",
+//         method: "POST",
+//         url: "/v1/chat/completions",
+//         body: {
+//           model: "gpt-5-2025-08-07",
+//           messages: [{ role: "user", content: "Hello" }],
+//           reasoning_effort: "high"
+//         }
+//       },
+//       {
+//         custom_id: "req-2", 
+//         method: "POST",
+//         url: "/v1/chat/completions",
+//         body: {
+//           model: "claude-3-5-sonnet-v2@20241022",
+//           messages: [{ role: "user", content: "Goodbye" }]
+//         }
+//       }
+//     ].map(req => JSON.stringify(req)).join('\n');
 
-//     const jsonlContent = batchData.map(item => JSON.stringify(item)).join('\n');
-//     const blob = new Blob([jsonlContent], { type: 'application/jsonl' });
+//     // Upload file using Files API
+//     const file = await sdk.files.upload(jsonlContent, 'batch-requests.jsonl');
+//     console.log('File uploaded:', file.id);
 
-//     // Upload the file
-//     const uploadResponse = await sdk.files.upload(blob, 'batch-requests.jsonl', 'batch');
-//     console.log('File uploaded:', uploadResponse);
-
-//     // Create a batch
-//     const batchResponse = await sdk.batches.create({
-//       input_file_id: uploadResponse.id,
-//       endpoint: '/v1/chat/completions',
-//       completion_window: '24h',
-//     });
-
+//     // Create batch using uploaded file
+//     const batchResponse = await sdk.openai.batches.createFromFile(file.id);
 //     console.log('Batch created:', batchResponse);
 
-//     // Check batch status
-//     const statusResponse = await sdk.batches.get(batchResponse.id);
+//     // Check status
+//     const statusResponse = await sdk.openai.batches.get(batchResponse.id);
 //     console.log('Batch status:', statusResponse.status);
-
 //   } catch (error) {
-//     console.error('Batch processing error:', error);
+//     console.error('OpenAI batch error:', error);
 //   }
 // }
 
 // /**
-//  * Example 8: Tokenization and cost estimation
+//  * Example 8: Unified batch creation with file support
+//  */
+// async function unifiedBatchWithFiles() {
+//   try {
+//     // Create JSONL content for unified batch processing
+//     const jsonlContent = [
+//       {
+//         model: "gpt-5-2025-08-07",
+//         messages: [{ role: "user", content: "Hello" }],
+//         reasoning_effort: "high",
+//         max_tokens: 100
+//       },
+//       {
+//         model: "claude-3-5-sonnet-v2@20241022",
+//         messages: [{ role: "user", content: "Goodbye" }],
+//         prompt_cache: true
+//       }
+//     ].map(req => JSON.stringify(req)).join('\n');
+
+//     // Upload file
+//     const file = await sdk.files.upload(jsonlContent, 'unified-batch.jsonl');
+//     console.log('File uploaded:', file.id);
+
+//     // Create unified batch using file
+//     const batchResponse = await sdk.batches.createFromFile(file.id, {
+//       metadata: { batch_name: "file_batch" },
+//       settings: { concurrency: 4 }
+//     });
+//     console.log('Unified batch created:', batchResponse);
+
+//     // Check status
+//     const statusResponse = await sdk.batches.get(batchResponse.id);
+//     console.log('Batch status:', statusResponse.status);
+//   } catch (error) {
+//     console.error('Unified batch error:', error);
+//   }
+// }
+
+// /**
+//  * Example 9: Files API management
+//  */
+// async function filesManagement() {
+//   try {
+//     // List existing files
+//     const filesList = await sdk.files.list();
+//     console.log('Existing files:', filesList.data.length);
+
+//     // Upload a new file
+//     const content = 'Sample file content for testing';
+//     const file = await sdk.files.upload(content, 'test-file.txt');
+//     console.log('Uploaded file:', file.id);
+
+//     // Get file metadata
+//     const fileInfo = await sdk.files.get(file.id);
+//     console.log('File info:', fileInfo);
+
+//     // Get file content
+//     const fileContent = await sdk.files.content(file.id);
+//     console.log('File content:', fileContent);
+
+//     // Delete file
+//     const deleteResult = await sdk.files.delete(file.id);
+//     console.log('File deleted:', deleteResult.deleted);
+//   } catch (error) {
+//     console.error('Files management error:', error);
+//   }
+// }
+
+// /**
+//  * Example 10: Tokenization and cost estimation
 //  */
 // async function tokenizationAndCosts() {
 //   try {
@@ -335,7 +412,9 @@
 //     { name: 'Unified Endpoint', fn: unifiedEndpoint },
 //     { name: 'OpenAI Compatible', fn: openAICompatible },
 //     { name: 'Anthropic Compatible', fn: anthropicCompatible },
-//     { name: 'Batch Processing', fn: batchProcessing },
+//     { name: 'OpenAI Batch (Files)', fn: openAIBatchUsingFiles },
+//     { name: 'Unified Batch (Files)', fn: unifiedBatchWithFiles },
+//     { name: 'Files Management', fn: filesManagement },
 //     { name: 'Tokenization & Costs', fn: tokenizationAndCosts },
 //     { name: 'Usage Analytics', fn: usageAnalytics },
 //     { name: 'Advanced Error Handling', fn: advancedErrorHandling },
@@ -365,7 +444,9 @@
 //   unifiedEndpoint,
 //   openAICompatible,
 //   anthropicCompatible,
-//   batchProcessing,
+//   openAIBatchUsingFiles,
+//   unifiedBatchWithFiles,
+//   filesManagement,
 //   tokenizationAndCosts,
 //   usageAnalytics,
 //   advancedErrorHandling,

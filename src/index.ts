@@ -30,20 +30,43 @@ export interface AnthropicMessage {
   content: Array<{ type: 'text'; text: string }> | string;
 }
 
+export interface Tool {
+  type: 'function';
+  function: {
+    name: string;
+    description?: string;
+    parameters?: any;
+  };
+}
+
+export interface PromptCacheOptions {
+  read?: boolean;
+  write?: boolean;
+  ttlSeconds?: number;
+}
+
+export interface MCPServer {
+  name: string;
+  uri: string;
+  capabilities?: string[];
+  config?: Record<string, any>;
+}
+
 export interface UnifiedRequest {
-  model?: string;
-  messages?: UnifiedMessage[];
-  message?: string; // Alternative single message format
-  system?: string;
+  messages: UnifiedMessage[];
+  model: string;
+  maxTokens?: number;
   temperature?: number;
-  max_tokens?: number;
+  topP?: number;
   stream?: boolean;
-  tools?: any[];
-  toolChoice?: any;
+  tools?: Tool[];
+  toolChoice?: 'auto' | 'none' | { type: 'function'; function: { name: string } };
   timeoutMs?: number;
-  reasoning_effort?: 'low' | 'medium' | 'high';
-  prompt_cache?: boolean;
-  input_file_id?: string; // File-based input support
+  promptCache?: PromptCacheOptions;
+  reasoningEffort?: 'low' | 'medium' | 'high';
+  mcpServers?: MCPServer[];
+  system?: string;
+  message?: string;
 }
 
 export interface OpenAIRequest {
@@ -55,6 +78,7 @@ export interface OpenAIRequest {
   tools?: any[];
   tool_choice?: any;
   reasoning_effort?: 'low' | 'medium' | 'high';
+  mcp_servers?: MCPServer[];
 }
 
 export interface AnthropicRequest {
@@ -66,6 +90,7 @@ export interface AnthropicRequest {
   tools?: any[];
   tool_choice?: any;
   system?: string;
+  mcp_servers?: MCPServer[];
 }
 
 export interface Usage {
@@ -397,6 +422,10 @@ export class KushRouterSDK {
       out.reasoning_effort = out.reasoning_effort ?? out.reasoningEffort;
       delete out.reasoningEffort;
     }
+    if (out.mcpServers !== undefined) {
+      out.mcp_servers = out.mcp_servers ?? out.mcpServers;
+      delete out.mcpServers;
+    }
     return out;
   }
 
@@ -423,6 +452,10 @@ export class KushRouterSDK {
     if (out.timeoutMs !== undefined) {
       out.timeout_ms = out.timeout_ms ?? out.timeoutMs;
       delete out.timeoutMs;
+    }
+    if (out.mcpServers !== undefined) {
+      out.mcp_servers = out.mcp_servers ?? out.mcpServers;
+      delete out.mcpServers;
     }
     return out;
   }
@@ -958,13 +991,12 @@ export class KushRouterSDK {
 
     const request: UnifiedRequest = {
       model,
-      message: prompt,
+      messages: [{ role: 'user', content: prompt }],
       system,
       temperature,
-      max_tokens: maxTokens,
+      maxTokens,
       stream,
-      reasoning_effort,
-      prompt_cache,
+      reasoningEffort: reasoning_effort,
     };
 
     if (stream) {
@@ -1014,10 +1046,9 @@ export class KushRouterSDK {
       model,
       messages,
       temperature,
-      max_tokens: maxTokens,
+      maxTokens,
       stream,
-      reasoning_effort,
-      prompt_cache,
+      reasoningEffort: reasoning_effort,
     };
 
     if (stream) {
@@ -1044,7 +1075,7 @@ export class KushRouterSDK {
     // Estimate cost based on token count and model
     // This is a simplified estimation - actual costs may vary
     const inputTokens = tokenData.tokens;
-    const outputTokens = request.max_tokens || 500;
+    const outputTokens = request.maxTokens || 500;
     
     // Model pricing per 1M tokens (simplified)
     const pricing: Record<string, { input: number; output: number }> = {

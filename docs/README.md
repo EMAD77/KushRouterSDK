@@ -14,6 +14,7 @@ Welcome to the comprehensive documentation for the KushRouter SDK. This guide co
 - [Text Completion](./core-features/text-completion.md)
 - [Streaming Responses](./core-features/streaming.md)
 - [Chat Conversations](./core-features/chat-conversations.md)
+- [MCP Server Integration](./core-features/mcp-servers.md)
 - [Analytics & Monitoring](./core-features/analytics.md)
 - [Provider-Specific APIs](./core-features/provider-apis.md)
 - [Error Handling](./core-features/error-handling.md)
@@ -58,6 +59,7 @@ Welcome to the comprehensive documentation for the KushRouter SDK. This guide co
 | Get started quickly | [Quick Start Guide](./getting-started/quick-start.md) |
 | Build a chatbot | [Chatbot Guide](./use-cases/chatbots.md) |
 | Create an AI agent | [AI Agents Guide](./use-cases/ai-agents.md) |
+| Connect external tools | [MCP Server Integration](./core-features/mcp-servers.md) |
 | Stream responses in real-time | [Streaming Guide](./core-features/streaming.md) |
 | Monitor usage and costs | [Analytics Guide](./core-features/analytics.md) |
 | Handle errors properly | [Error Handling](./core-features/error-handling.md) |
@@ -97,13 +99,20 @@ console.log(`Total cost: $${analytics.data.summary.totalCost.toFixed(4)}`);
 console.log(`Most used model: ${analytics.data.modelBreakdown[0].model}`);
 ```
 
-### 5. **AI Agent with Tools**
+### 5. **AI Agent with MCP Servers**
 ```typescript
-const response = await sdk.chatOpenAI({
-  model: 'gpt-5-2025-08-07',
-  messages: [{ role: 'user', content: 'What\'s the weather?' }],
-  tools: [weatherTool],
-  reasoning_effort: 'high'
+const mcpServers = [
+  {
+    name: 'filesystem',
+    uri: 'stdio:///usr/local/bin/mcp-server-filesystem',
+    capabilities: ['read_file', 'write_file']
+  }
+];
+
+const response = await sdk.chatUnified({
+  model: 'claude-sonnet-4@20250514',
+  messages: [{ role: 'user', content: 'Read my project files and create a summary' }],
+  mcpServers
 });
 ```
 

@@ -326,7 +326,7 @@
 //  */
 // async function usageAnalytics() {
 //   try {
-//     // Get usage data
+//     // Get basic usage data
 //     const usage = await sdk.getUsage();
 //     console.log('Usage summary:', {
 //       totalRequests: usage.total_requests,
@@ -334,11 +334,38 @@
 //       totalCost: usage.total_cost,
 //     });
 
-//     // Get analytics data
+//     // Get detailed analytics data (default 30 days)
 //     const analytics = await sdk.getAnalytics();
-//     console.log('Analytics data:', {
-//       dailyUsage: analytics.daily_usage.slice(-7), // Last 7 days
-//       topModels: analytics.model_breakdown.slice(0, 3), // Top 3 models
+//     console.log('30-day Analytics Summary:', {
+//       totalRequests: analytics.data.summary.totalRequests,
+//       totalCost: analytics.data.summary.totalCost,
+//       dateRange: analytics.data.summary.dateRange,
+//       topModels: analytics.data.modelBreakdown.slice(0, 3),
+//       recentDays: analytics.data.dailyUsage.slice(-7)
+//     });
+
+//     // Get 7-day analytics with hourly distribution
+//     const weeklyAnalytics = await sdk.getAnalytics({
+//       days: 7,
+//       includeHourly: true
+//     });
+//     
+//     console.log('Weekly Analytics with Hourly Data:', {
+//       summary: weeklyAnalytics.data.summary,
+//       peakHour: weeklyAnalytics.data.hourlyDistribution
+//         .reduce((max, hour) => hour.requests > max.requests ? hour : max)
+//     });
+
+//     // Get model-focused analytics
+//     const modelAnalytics = await sdk.getAnalytics({
+//       days: 30,
+//       groupBy: 'model'
+//     });
+//     
+//     console.log('Model Performance Analysis:', {
+//       mostUsed: modelAnalytics.data.modelBreakdown[0],
+//       mostCostEffective: modelAnalytics.data.modelBreakdown
+//         .sort((a, b) => a.avgCostPerRequest - b.avgCostPerRequest)[0]
 //     });
 
 //   } catch (error) {

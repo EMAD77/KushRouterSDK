@@ -14,6 +14,7 @@ Welcome to the comprehensive documentation for the KushRouter SDK. This guide co
 - [Text Completion](./core-features/text-completion.md)
 - [Streaming Responses](./core-features/streaming.md)
 - [Chat Conversations](./core-features/chat-conversations.md)
+- [Analytics & Monitoring](./core-features/analytics.md)
 - [Provider-Specific APIs](./core-features/provider-apis.md)
 - [Error Handling](./core-features/error-handling.md)
 
@@ -22,6 +23,7 @@ Welcome to the comprehensive documentation for the KushRouter SDK. This guide co
 - [AI Agents](./use-cases/ai-agents.md)
 - [Content Generation](./use-cases/content-generation.md)
 - [Code Assistance](./use-cases/code-assistance.md)
+- [Analytics & Monitoring](./use-cases/analytics-monitoring.md)
 - [Data Analysis](./use-cases/data-analysis.md)
 - [Batch Processing](./use-cases/batch-processing.md)
 
@@ -57,6 +59,7 @@ Welcome to the comprehensive documentation for the KushRouter SDK. This guide co
 | Build a chatbot | [Chatbot Guide](./use-cases/chatbots.md) |
 | Create an AI agent | [AI Agents Guide](./use-cases/ai-agents.md) |
 | Stream responses in real-time | [Streaming Guide](./core-features/streaming.md) |
+| Monitor usage and costs | [Analytics Guide](./core-features/analytics.md) |
 | Handle errors properly | [Error Handling](./core-features/error-handling.md) |
 | Optimize costs | [Cost Optimization](./advanced/cost-optimization.md) |
 | Deploy to production | [Production Guide](./advanced/production.md) |
@@ -87,7 +90,14 @@ const response = await sdk.chat([
 ]);
 ```
 
-### 4. **AI Agent with Tools**
+### 4. **Usage Analytics**
+```typescript
+const analytics = await sdk.getAnalytics({ days: 30, includeHourly: true });
+console.log(`Total cost: $${analytics.data.summary.totalCost.toFixed(4)}`);
+console.log(`Most used model: ${analytics.data.modelBreakdown[0].model}`);
+```
+
+### 5. **AI Agent with Tools**
 ```typescript
 const response = await sdk.chatOpenAI({
   model: 'gpt-5-2025-08-07',

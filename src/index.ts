@@ -188,18 +188,44 @@ export interface UsageResponse {
 }
 
 export interface AnalyticsResponse {
-  daily_usage: Array<{
-    date: string;
-    requests: number;
-    tokens: number;
-    cost: number;
-  }>;
-  model_breakdown: Array<{
-    model: string;
-    requests: number;
-    tokens: number;
-    cost: number;
-  }>;
+  success: boolean;
+  data: {
+    summary: {
+      totalRequests: number;
+      totalCost: number;
+      dateRange: {
+        from: string;
+        to: string;
+      };
+    };
+    modelBreakdown: Array<{
+      model: string;
+      requests: number;
+      cost: number;
+      inputTokens: number;
+      outputTokens: number;
+      avgCostPerRequest: number;
+      percentage: number;
+    }>;
+    dailyUsage: Array<{
+      date: string;
+      requests: number;
+      cost: number;
+      inputTokens: number;
+      outputTokens: number;
+    }>;
+    hourlyDistribution: Array<{
+      hour: number;
+      requests: number;
+      cost: number;
+    }>;
+  };
+  meta: {
+    apiKeyId: string;
+    generatedAt: string;
+    daysRequested: number;
+    recordsFound: number;
+  };
 }
 
 // Error types
@@ -885,8 +911,19 @@ export class KushRouterSDK {
   /**
    * Analytics data
    */
-  async getAnalytics(): Promise<AnalyticsResponse> {
-    const response = await this.makeRequest('/api/v1/analytics');
+  async getAnalytics(options: {
+    days?: number;
+    includeHourly?: boolean;
+    groupBy?: 'day' | 'hour' | 'model';
+  } = {}): Promise<AnalyticsResponse> {
+    const { days = 30, includeHourly = false, groupBy = 'day' } = options;
+    
+    const params = new URLSearchParams();
+    params.set('days', days.toString());
+    params.set('include_hourly', includeHourly.toString());
+    params.set('group_by', groupBy);
+    
+    const response = await this.makeRequest(`/api/v1/analytics?${params.toString()}`);
     return response.json();
   }
 

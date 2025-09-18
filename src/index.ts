@@ -464,7 +464,7 @@ export class KushRouterSDK {
    * Chat completions using the unified endpoint
    */
   async chatUnified(request: UnifiedRequest): Promise<ChatResponse> {
-    const response = await this.makeRequest('/api/v1/llm/unified', {
+    const response = await this.makeRequest('/api/v1/messages', {
       method: 'POST',
       body: JSON.stringify(this.normalizeUnifiedRequest(request)),
     });
@@ -478,7 +478,7 @@ export class KushRouterSDK {
   async *streamUnified(request: UnifiedRequest): AsyncGenerator<StreamChunk> {
     const streamRequest = this.normalizeUnifiedRequest({ ...request, stream: true });
     
-    const response = await this.makeRequest('/api/v1/llm/unified', {
+    const response = await this.makeRequest('/api/v1/messages', {
       method: 'POST',
       body: JSON.stringify(streamRequest),
     });
@@ -523,7 +523,7 @@ export class KushRouterSDK {
    * OpenAI-compatible chat completions
    */
   async chatOpenAI(request: OpenAIRequest): Promise<ChatResponse> {
-    const response = await this.makeRequest('/api/v1/openai/chat/completions', {
+    const response = await this.makeRequest('/api/openai/chat/completions', {
       method: 'POST',
       body: JSON.stringify(this.normalizeOpenAIRequest(request)),
     }, true); // Use Bearer token
@@ -537,7 +537,7 @@ export class KushRouterSDK {
   async *streamOpenAI(request: OpenAIRequest): AsyncGenerator<StreamChunk> {
     const streamRequest = this.normalizeOpenAIRequest({ ...request, stream: true });
     
-    const response = await this.makeRequest('/api/v1/openai/chat/completions', {
+    const response = await this.makeRequest('/api/openai/chat/completions', {
       method: 'POST',
       body: JSON.stringify(streamRequest),
     }, true);
@@ -582,7 +582,7 @@ export class KushRouterSDK {
    * Anthropic-compatible messages
    */
   async chatAnthropic(request: AnthropicRequest): Promise<any> {
-    const response = await this.makeRequest('/api/v1/anthropic/messages', {
+    const response = await this.makeRequest('/api/anthropic/messages', {
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
@@ -599,7 +599,7 @@ export class KushRouterSDK {
   async *streamAnthropic(request: AnthropicRequest): AsyncGenerator<any> {
     const streamRequest = { ...request, stream: true };
     
-    const response = await this.makeRequest('/api/v1/anthropic/messages', {
+    const response = await this.makeRequest('/api/anthropic/messages', {
       method: 'POST',
       body: JSON.stringify(streamRequest),
       headers: {
@@ -794,7 +794,7 @@ export class KushRouterSDK {
        * @param request Anthropic batch request with params structure
        */
       create: async (request: AnthropicBatchRequest): Promise<BatchResponse> => {
-        const response = await this.makeRequest('/api/v1/anthropic/batches', {
+        const response = await this.makeRequest('/api/anthropic/batches', {
           method: 'POST',
           body: JSON.stringify(request),
         });
@@ -806,7 +806,7 @@ export class KushRouterSDK {
        * List Anthropic batches
        */
       list: async (limit?: number): Promise<{ data: BatchResponse[] }> => {
-        const url = limit ? `/api/v1/anthropic/batches?limit=${limit}` : '/api/v1/anthropic/batches';
+        const url = limit ? `/api/anthropic/batches?limit=${limit}` : '/api/anthropic/batches';
         const response = await this.makeRequest(url);
         return response.json();
       },
@@ -815,7 +815,7 @@ export class KushRouterSDK {
        * Get Anthropic batch status
        */
       get: async (batchId: string): Promise<BatchResponse> => {
-        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}`);
+        const response = await this.makeRequest(`/api/anthropic/batches/${batchId}`);
         return response.json();
       },
 
@@ -823,7 +823,7 @@ export class KushRouterSDK {
        * Cancel an Anthropic batch
        */
       cancel: async (batchId: string): Promise<BatchResponse> => {
-        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/cancel`, {
+        const response = await this.makeRequest(`/api/anthropic/batches/${batchId}/cancel`, {
           method: 'POST',
         });
         return response.json();
@@ -833,7 +833,7 @@ export class KushRouterSDK {
        * Get Anthropic batch results
        */
       results: async (batchId: string): Promise<any> => {
-        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/results`);
+        const response = await this.makeRequest(`/api/anthropic/batches/${batchId}/results`);
         return response.json();
       },
 
@@ -841,7 +841,7 @@ export class KushRouterSDK {
        * Export Anthropic batch results
        */
       export: async (batchId: string): Promise<Blob> => {
-        const response = await this.makeRequest(`/api/v1/anthropic/batches/${batchId}/export`);
+        const response = await this.makeRequest(`/api/anthropic/batches/${batchId}/export`);
         return response.blob();
       },
     },
@@ -858,7 +858,7 @@ export class KushRouterSDK {
        * @param request OpenAI batch request with input_file_id for uploaded JSONL file
        */
       create: async (request: OpenAIBatchRequest): Promise<BatchResponse> => {
-        const response = await this.makeRequest('/api/v1/openai/batches', {
+        const response = await this.makeRequest('/api/openai/batches', {
           method: 'POST',
           body: JSON.stringify(request),
         }, true); // Use Bearer token
@@ -887,7 +887,7 @@ export class KushRouterSDK {
        * List batches (OpenAI-compatible)
        */
       list: async (limit?: number): Promise<{ object: string; data: BatchResponse[]; has_more: boolean }> => {
-        const url = limit ? `/api/v1/openai/batches?limit=${limit}` : '/api/v1/openai/batches';
+        const url = limit ? `/api/openai/batches?limit=${limit}` : '/api/openai/batches';
         const response = await this.makeRequest(url, {}, true);
         return response.json();
       },
@@ -896,7 +896,7 @@ export class KushRouterSDK {
        * Get batch status (OpenAI-compatible)
        */
       get: async (batchId: string): Promise<BatchResponse> => {
-        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}`, {}, true);
+        const response = await this.makeRequest(`/api/openai/batches/${batchId}`, {}, true);
         return response.json();
       },
 
@@ -904,7 +904,7 @@ export class KushRouterSDK {
        * Cancel a batch (OpenAI-compatible)
        */
       cancel: async (batchId: string): Promise<BatchResponse> => {
-        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}/cancel`, {
+        const response = await this.makeRequest(`/api/openai/batches/${batchId}/cancel`, {
           method: 'POST',
         }, true);
 
@@ -915,7 +915,7 @@ export class KushRouterSDK {
        * Get batch results (OpenAI-compatible)
        */
       results: async (batchId: string): Promise<any> => {
-        const response = await this.makeRequest(`/api/v1/openai/batches/${batchId}/results`, {}, true);
+        const response = await this.makeRequest(`/api/openai/batches/${batchId}/results`, {}, true);
         return response.json();
       },
     },

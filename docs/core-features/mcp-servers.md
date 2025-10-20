@@ -31,7 +31,7 @@ const mcpServers: MCPServer[] = [
 ];
 
 const response = await router.chatUnified({
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [
     {
       role: 'user',
@@ -85,7 +85,7 @@ const response = await router.chatUnified({
 ```typescript
 // Use camelCase for mcpServers - SDK handles normalization
 const response = await router.chatUnified({
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [...],
   mcpServers: [...] // camelCase
 });
@@ -107,7 +107,7 @@ const response = await router.chatOpenAI({
 ```typescript
 // Use snake_case for mcp_servers
 const response = await router.chatAnthropic({
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [...],
   max_tokens: 1000,
   mcp_servers: [...] // snake_case
@@ -126,7 +126,7 @@ const mcpServers: MCPServer[] = [
 ];
 
 for await (const chunk of router.streamUnified({
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [
     {
       role: 'user',
@@ -303,7 +303,7 @@ async function robustMCPUsage() {
 
   try {
     const response = await router.chatUnified({
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       messages: [{ role: 'user', content: 'Use external tools to help me' }],
       mcpServers
     });
@@ -314,7 +314,7 @@ async function robustMCPUsage() {
     
     // Fallback without MCP servers
     const fallbackResponse = await router.chatUnified({
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       messages: [{ role: 'user', content: 'Help me without external tools' }]
     });
     

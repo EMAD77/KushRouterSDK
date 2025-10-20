@@ -523,7 +523,7 @@ export class KushRouterSDK {
    * OpenAI-compatible chat completions
    */
   async chatOpenAI(request: OpenAIRequest): Promise<ChatResponse> {
-    const response = await this.makeRequest('/api/openai/chat/completions', {
+    const response = await this.makeRequest('/api/openai/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify(this.normalizeOpenAIRequest(request)),
     }, true); // Use Bearer token
@@ -537,7 +537,7 @@ export class KushRouterSDK {
   async *streamOpenAI(request: OpenAIRequest): AsyncGenerator<StreamChunk> {
     const streamRequest = this.normalizeOpenAIRequest({ ...request, stream: true });
     
-    const response = await this.makeRequest('/api/openai/chat/completions', {
+    const response = await this.makeRequest('/api/openai/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify(streamRequest),
     }, true);
@@ -1034,7 +1034,7 @@ export class KushRouterSDK {
     } = {}
   ): Promise<string | AsyncGenerator<string>> {
     const {
-      model = 'claude-sonnet-4@20250514',
+      model = 'claude-sonnet-4-5-20250929',
       temperature = 0.7,
       maxTokens = 1000,
       stream = false,
@@ -1083,8 +1083,8 @@ export class KushRouterSDK {
       'gpt-5-mini-2025-08-07': { input: 0.25, output: 1.0 },
       'gpt-4o-2024-11-20': { input: 1.75, output: 7.0 },
       'gpt-4o-mini-2024-07-18': { input: 0.105, output: 0.42 },
-      'claude-sonnet-4@20250514': { input: 2.1, output: 8.4 },
-      'claude-3-5-sonnet-v2@20241022': { input: 2.1, output: 8.4 },
+      'claude-sonnet-4-5-20250929': { input: 2.1, output: 8.4 },
+      'claude-sonnet-4-5-20250929': { input: 2.1, output: 8.4 },
     };
 
     const modelPricing = pricing[request.model || 'gpt-5-2025-08-07'] || pricing['gpt-5-2025-08-07'];

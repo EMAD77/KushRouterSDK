@@ -110,7 +110,7 @@ const mcpServers = [
 ];
 
 const response = await sdk.chatUnified({
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [{ role: 'user', content: 'Read my project files and create a summary' }],
   mcpServers
 });

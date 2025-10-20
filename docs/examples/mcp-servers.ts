@@ -29,7 +29,7 @@ async function basicMCPExample() {
   ];
 
   const response = await router.chatUnified({
-    model: 'claude-sonnet-4@20250514',
+    model: 'claude-sonnet-4-5-20250929',
     messages: [
       {
         role: 'user',
@@ -96,7 +96,7 @@ async function webAPIMCPExample() {
   ];
 
   const response = await router.chatUnified({
-    model: 'claude-sonnet-4@20250514',
+    model: 'claude-sonnet-4-5-20250929',
     messages: [
       {
         role: 'user',
@@ -151,7 +151,7 @@ async function mcpWithAnthropic() {
   ];
 
   const response = await router.chatAnthropic({
-    model: 'claude-sonnet-4@20250514',
+    model: 'claude-sonnet-4-5-20250929',
     messages: [
       {
         role: 'user',
@@ -182,7 +182,7 @@ async function streamingWithMCP() {
   console.log('Streaming response:');
   
   for await (const chunk of router.streamUnified({
-    model: 'claude-sonnet-4@20250514',
+    model: 'claude-sonnet-4-5-20250929',
     messages: [
       {
         role: 'user',
@@ -266,7 +266,7 @@ async function mcpErrorHandling() {
 
   try {
     const response = await router.chatUnified({
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       messages: [
         {
           role: 'user',
@@ -282,7 +282,7 @@ async function mcpErrorHandling() {
     
     // Fallback without MCP servers
     const fallbackResponse = await router.chatUnified({
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       messages: [
         {
           role: 'user',

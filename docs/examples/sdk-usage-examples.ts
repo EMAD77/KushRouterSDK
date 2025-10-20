@@ -39,7 +39,7 @@
 //   try {
 //     const stream = await sdk.complete('Write a creative short story', {
 //       stream: true,
-//       model: 'claude-sonnet-4@20250514',
+//       model: 'claude-sonnet-4-5-20250929',
 //       temperature: 0.8,
 //     });
 
@@ -81,7 +81,7 @@
 // async function unifiedEndpoint() {
 //   try {
 //     const response = await sdk.chatUnified({
-//       model: 'claude-3-5-sonnet-v2@20241022',
+//       model: 'claude-sonnet-4-5-20250929',
 //       message: 'Analyze the pros and cons of renewable energy',
 //       temperature: 0.6,
 //       max_tokens: 800,
@@ -121,7 +121,7 @@
 // async function anthropicCompatible() {
 //   try {
 //     const response = await sdk.chatAnthropic({
-//       model: 'claude-sonnet-4@20250514',
+//       model: 'claude-sonnet-4-5-20250929',
 //       messages: [
 //         {
 //           role: 'user',
@@ -160,7 +160,7 @@
 //         method: "POST",
 //         url: "/v1/chat/completions",
 //         body: {
-//           model: "claude-3-5-sonnet-v2@20241022",
+//           model: "claude-sonnet-4-5-20250929",
 //           messages: [{ role: "user", content: "Goodbye" }]
 //         }
 //       }
@@ -239,7 +239,7 @@
 //         max_tokens: 100
 //       },
 //       {
-//         model: "claude-3-5-sonnet-v2@20241022",
+//         model: "claude-sonnet-4-5-20250929",
 //         messages: [{ role: "user", content: "Goodbye" }],
 //         prompt_cache: true
 //       }
@@ -309,7 +309,7 @@
 
 //     // Estimate cost for a request
 //     const estimatedCost = await sdk.estimateCost({
-//       model: 'claude-sonnet-4@20250514',
+//       model: 'claude-sonnet-4-5-20250929',
 //       message: 'Write a detailed analysis of climate change impacts.',
 //       max_tokens: 1000,
 //     });

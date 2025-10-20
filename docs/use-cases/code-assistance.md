@@ -144,7 +144,7 @@ Requirements:
 - Add error handling where needed`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.3,
       maxTokens: 800
     }) as string;
@@ -312,7 +312,7 @@ Focus on:
 Provide actionable feedback for the author.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.3,
       maxTokens: 800
     }) as string;
@@ -477,7 +477,7 @@ Provide:
 Make it understandable for developers at any level.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.2,
       maxTokens: 600
     }) as string;
@@ -542,7 +542,7 @@ Include:
 Follow ${style} conventions and best practices.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.3,
       maxTokens: 800
     }) as string;
@@ -575,7 +575,7 @@ ${codeExample ? `Include this code example:\n\`\`\`${language}\n${codeExample}\n
 Make it professional and comprehensive.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.4,
       maxTokens: 1200
     }) as string;
@@ -694,7 +694,7 @@ Requirements:
 - Ensure good separation of concerns`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.3,
       maxTokens: 600
     }) as string;
@@ -767,7 +767,7 @@ Create tests for:
 Include proper test setup, data fixtures, and cleanup.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.3,
       maxTokens: 1200
     }) as string;

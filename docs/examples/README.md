@@ -53,7 +53,7 @@ console.log(result);
 ```typescript
 const stream = await sdk.complete('Write a creative story', { 
   stream: true,
-  model: 'claude-sonnet-4@20250514' 
+  model: 'claude-sonnet-4-5-20250929' 
 });
 
 for await (const chunk of stream) {

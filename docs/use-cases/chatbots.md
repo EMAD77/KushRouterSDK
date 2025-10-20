@@ -71,7 +71,7 @@ class StreamingChatbot {
   async *streamResponse(userMessage: string): AsyncGenerator<string> {
     try {
       const stream = await sdk.streamUnified({
-        model: 'claude-sonnet-4@20250514',
+        model: 'claude-sonnet-4-5-20250929',
         messages: [
           { role: 'system', content: this.systemPrompt },
           { role: 'user', content: userMessage }
@@ -198,7 +198,7 @@ class ContextualChatbot {
 
     try {
       const stream = await sdk.chat(this.messages, {
-        model: 'claude-sonnet-4@20250514',
+        model: 'claude-sonnet-4-5-20250929',
         stream: true
       });
 
@@ -371,7 +371,7 @@ class MultiSessionChatbot {
 
     try {
       const stream = await sdk.chat(session.messages, {
-        model: 'claude-sonnet-4@20250514',
+        model: 'claude-sonnet-4-5-20250929',
         stream: true
       });
 

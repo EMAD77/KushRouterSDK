@@ -57,7 +57,7 @@ const summary = await sdk.complete('Summarize the benefits of renewable energy')
 
 // With options
 const creative = await sdk.complete('Write a haiku about coding', {
-  model: 'claude-sonnet-4@20250514',
+  model: 'claude-sonnet-4-5-20250929',
   temperature: 0.8,
   maxTokens: 100
 });
@@ -84,7 +84,7 @@ console.log(response);
 ```typescript
 const stream = await sdk.complete('Write a creative story about space exploration', {
   stream: true,
-  model: 'claude-sonnet-4@20250514'
+  model: 'claude-sonnet-4-5-20250929'
 });
 
 console.log('Story:');
@@ -103,7 +103,7 @@ const gptResponse = await sdk.complete('Analyze this data', {
 
 // Anthropic models
 const claudeResponse = await sdk.complete('Write a poem', {
-  model: 'claude-sonnet-4@20250514'
+  model: 'claude-sonnet-4-5-20250929'
 });
 
 // Provider-specific APIs
@@ -113,7 +113,7 @@ const openaiCompatible = await sdk.chatOpenAI({
 });
 
 const anthropicCompatible = await sdk.chatAnthropic({
-  model: 'claude-3-5-sonnet-v2@20241022',
+  model: 'claude-sonnet-4-5-20250929',
   messages: [{ 
     role: 'user', 
     content: [{ type: 'text', text: 'Hello' }] 
@@ -191,7 +191,7 @@ class SimpleChatApp {
     this.messages.push({ role: 'user', content: userMessage });
 
     const stream = await sdk.chat(this.messages, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       stream: true
     });
 

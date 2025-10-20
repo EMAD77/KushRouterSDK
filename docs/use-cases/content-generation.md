@@ -49,7 +49,7 @@ class ContentGenerator {
     - Include relevant examples when appropriate`;
 
     const content = await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.7,
       maxTokens: this.getTokenLimit(length)
     });
@@ -167,7 +167,7 @@ class BlogPostGenerator {
     - Be around 150-200 words`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.7,
       maxTokens: 300
     }) as string;
@@ -180,7 +180,7 @@ class BlogPostGenerator {
     Include specific examples and actionable advice.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.7,
       maxTokens: Math.ceil(wordCount * 1.5)
     }) as string;
@@ -199,7 +199,7 @@ class BlogPostGenerator {
     - Be around 100-150 words`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.7,
       maxTokens: 250
     }) as string;
@@ -504,7 +504,7 @@ Include:
 Format as markdown with proper heading.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.4,
       maxTokens: 600
     }) as string;
@@ -537,7 +537,7 @@ Include examples in:
 - Common use case scenarios`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.4,
       maxTokens: 800
     }) as string;
@@ -591,7 +591,7 @@ Create a compelling narrative with:
 - Dialogue that reveals character`;
 
     const story = await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.8,
       maxTokens: Math.ceil(wordTargets[length] * 1.5)
     });
@@ -666,7 +666,7 @@ Consider:
 Make it original and evocative.`;
 
     return await sdk.complete(prompt, {
-      model: 'claude-sonnet-4@20250514',
+      model: 'claude-sonnet-4-5-20250929',
       temperature: 0.9,
       maxTokens: 400
     }) as string;

@@ -33,7 +33,7 @@ const sdk = createKushRouterSDK({
 async function basicStreaming() {
   const stream = await sdk.complete('Write a creative story about space exploration', {
     stream: true,
-    model: 'claude-sonnet-4@20250514',
+    model: 'claude-sonnet-4-5-20250929',
     temperature: 0.8
   });
 
@@ -109,7 +109,7 @@ class StreamingProcessor {
   }> {
     const stream = await sdk.complete(prompt, { 
       stream: true,
-      model: 'claude-sonnet-4@20250514'
+      model: 'claude-sonnet-4-5-20250929'
     });
 
     let fullText = '';
@@ -220,7 +220,7 @@ class MultiModelStreaming {
   async compareModels(prompt: string): Promise<void> {
     const models = [
       'gpt-5-2025-08-07',
-      'claude-sonnet-4@20250514',
+      'claude-sonnet-4-5-20250929',
       'gpt-4o-2024-11-20'
     ];
 
@@ -425,7 +425,7 @@ router.post('/stream', async (req, res) => {
   try {
     const stream = await sdk.complete(message, { 
       stream: true,
-      model: 'claude-sonnet-4@20250514'
+      model: 'claude-sonnet-4-5-20250929'
     });
 
     for await (const chunk of stream as AsyncGenerator<string>) {
@@ -528,7 +528,7 @@ class InterruptibleStreaming {
     try {
       const stream = await sdk.streamUnified({
         message: prompt,
-        model: 'claude-sonnet-4@20250514'
+        model: 'claude-sonnet-4-5-20250929'
       });
 
       for await (const chunk of stream) {
@@ -637,7 +637,7 @@ class MetricsStreaming {
     
     const stream = await sdk.complete(prompt, { 
       stream: true,
-      model: 'claude-sonnet-4@20250514'
+      model: 'claude-sonnet-4-5-20250929'
     });
 
     for await (const chunk of stream as AsyncGenerator<string>) {
